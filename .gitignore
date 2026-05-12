@@ -1,0 +1,31 @@
+# Personal notes
+docs/
+
+# Build outputs
+build/
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+
+# Executables
+traffic_simulation
+traffic_simulation_tests
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Docs build outputs
+docs/*.pdf
+docs/*.html
