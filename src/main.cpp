@@ -22,6 +22,7 @@ using namespace traffic_simulation;
 #include <omp.h>
 #endif
 
+using namespace traffic_simulation;
 /**
  * @brief Print usage information
  */

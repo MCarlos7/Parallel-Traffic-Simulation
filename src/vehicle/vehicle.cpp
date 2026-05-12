@@ -7,6 +7,7 @@
 
 #include "vehicle/vehicle.hpp"
 #include "vehicle/pathfinder.hpp"
+#include <cmath>
 
 namespace vehicle {
 
