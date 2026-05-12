@@ -2,6 +2,7 @@
 #include "gui/renderer.hpp"
 
 #include <city/city.hpp>
+#include <city/street.hpp>
 #include <traffic/semaphore_controller.hpp>
 
 namespace gui {
@@ -230,7 +231,7 @@ sf::Color SimulationWindow::getTrafficLightColor(int x, int y) {
         return intersection_color_;
     }
     
-    traffic::Coordinate coord{x, y};
+    city::Coordinate coord{x, y};
     auto* sem = semaphores_->getSemaphoreAt(coord);
     
     if (sem) {

@@ -22,10 +22,9 @@ ControlPanel::ControlPanel()
 void ControlPanel::initializeText() {
     // Try to load a system font, fallback to default if unavailable
     if (!font_.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf") &&
-        !font_.loadFromFile("/usr/share/fonts/TTF/DejaVuSans.ttf") &&
-        !font_.loadFromFile("/usr/share/fonts/dejavu/DejaVuSans.ttf")) {
-        // Use built-in font as fallback
-        font_ = sf::Font::getDefaultFont();
+        !font_.loadFromFile("/usr/share/fonts/truetype/freefont/FreeSans.ttf")) {
+        // Last resort fallback - use a basic system font
+        font_.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
     }
     
     // Title
