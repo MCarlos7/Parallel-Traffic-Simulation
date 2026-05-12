@@ -25,7 +25,7 @@ endif()
 
 # Add source files from all src/* directories
 file(GLOB_RECURSE SOURCES 
-    "src/*/*.cpp"
+    "src/*.cpp" "src/*/*.cpp"
 )
 
 # Include directories

@@ -9,6 +9,7 @@
 #include "common/logger.hpp"
 #include "common/constants.hpp"
 #include "gui/simulation_window.hpp"
+using namespace traffic_simulation;
 
 #include <iostream>
 #include <string>

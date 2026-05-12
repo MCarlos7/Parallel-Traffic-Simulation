@@ -1,4 +1,5 @@
 #include "gui/renderer.hpp"
+#include <cmath>
 
 namespace gui {
 
