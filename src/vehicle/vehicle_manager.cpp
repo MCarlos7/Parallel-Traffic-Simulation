@@ -43,6 +43,8 @@ void VehicleManager::initialize(int vehicle_count) {
         // Set route (this also initializes vehicle position)
         vehicle->setRoute(start, dest, const_cast<city::City&>(city_));
         
+        vehicle->setSemaphoreController(semaphore_controller_);
+        
         // Start the vehicle thread
         vehicle->startThread();
         
@@ -173,6 +175,10 @@ city::Coordinate VehicleManager::generateDestination(
     } while (dest == start && city_.getGridSize() > 1);
     
     return dest;
+}
+
+void VehicleManager::setSemaphoreController(const traffic::SemaphoreController* controller) {
+    semaphore_controller_ = controller;
 }
 
 } // namespace vehicle

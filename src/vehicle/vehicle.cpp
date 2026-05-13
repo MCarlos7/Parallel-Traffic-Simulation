@@ -65,7 +65,7 @@ void Vehicle::run() {
             current_state == traffic_simulation::VehicleState::BLOCKED) {
             
             // Check if we can advance
-            if (city_ && canAdvance(*city_, nullptr)) {
+            if (city_ && canAdvance(*city_, semaphore_controller_)) {
                 advance();
             } else {
                 // Record wait time
@@ -229,6 +229,10 @@ std::vector<city::Coordinate> Vehicle::getRemainingPath() const {
         path.push_back(current_path_[i]);
     }
     return path;
+}
+
+void Vehicle::setSemaphoreController(const traffic::SemaphoreController* controller) {
+    semaphore_controller_ = controller;
 }
 
 } // namespace vehicle

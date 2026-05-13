@@ -142,6 +142,12 @@ public:
      */
     void notifyConditionsChanged();
 
+    /**
+     * @brief Set the SemaphoreController reference for this vehicle
+     * @param controller Pointer to the SemaphoreController
+     */
+    void setSemaphoreController(const traffic::SemaphoreController* controller);
+
 private:
     /**
      * @brief Internal method to update vehicle state
@@ -173,6 +179,9 @@ private:
     std::condition_variable cv_;
     std::atomic<bool> running_;
     std::atomic<bool> conditions_changed_;
+
+    // Reference to the SemaphoreController for checking light states
+    const traffic::SemaphoreController* semaphore_controller_ = nullptr;
 };
 
 } // namespace vehicle

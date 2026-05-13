@@ -58,6 +58,9 @@ void SimulationController::initialize(const SimulationConfig& config) {
 
     // Create and initialize vehicle manager
     vehicle_manager_ = new vehicle::VehicleManager(city_);
+    
+    vehicle_manager_->setSemaphoreController(&semaphore_controller_);
+
     vehicle_manager_->initialize(config.vehicle_count);
     Logger::getInstance().info("Vehicle manager initialized with " + 
                                std::to_string(vehicle_manager_->getTotalVehicleCount()) + " vehicles");

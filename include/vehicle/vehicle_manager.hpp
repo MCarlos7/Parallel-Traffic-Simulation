@@ -100,6 +100,11 @@ public:
      */
     city::Coordinate generateDestination(const city::Coordinate& start) const;
 
+    /**
+     * @brief Notify vehicles that conditions have changed (e.g., traffic light state)
+     */
+    void setSemaphoreController(const traffic::SemaphoreController* controller);
+
 private:
     const city::City& city_;
     std::vector<std::unique_ptr<Vehicle>> vehicles_;
@@ -110,6 +115,9 @@ private:
     // Random number generation
     mutable std::mt19937 rng_;
     mutable std::uniform_int_distribution<int> coord_dist_;
+
+    // Reference to the SemaphoreController for notifying vehicles
+    const traffic::SemaphoreController* semaphore_controller_ = nullptr;
 };
 
 } // namespace vehicle
