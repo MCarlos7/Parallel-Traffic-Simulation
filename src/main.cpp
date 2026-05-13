@@ -139,8 +139,7 @@ int runWithGUI(traffic_simulation::SimulationController& controller,
     // Start simulation
     controller.run();
 
-    // Run GUI in main thread, simulation runs in its own thread
-    window.run();
+    window.run(controller);
 
     // When window is closed, simulation will stop
     return 0;

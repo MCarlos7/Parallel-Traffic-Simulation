@@ -18,6 +18,7 @@
 #include <chrono>
 #include <random>
 #include <algorithm>
+#include "gui/simulation_window.hpp"
 
 namespace vehicle {
 
@@ -76,6 +77,12 @@ public:
      * @return Total vehicle count
      */
     std::size_t getTotalVehicleCount() const;
+
+    /**
+     * @brief Get render information for all vehicles (for GUI)
+     * @return Vector of VehicleRenderInfo
+     */
+    std::vector<gui::VehicleRenderInfo> getRenderInfo() const;
 
     /**
      * @brief Stop all vehicle threads

@@ -4,6 +4,7 @@
 #include <city/city.hpp>
 #include <city/street.hpp>
 #include <traffic/semaphore_controller.hpp>
+#include "common/simulation_controller.hpp"
 
 namespace gui {
 
@@ -209,20 +210,11 @@ void SimulationWindow::drawVehicles() {
     if (!vehicles_) return;
     
     for (const auto& vehicle : *vehicles_) {
+        // Calcular la posición central en píxeles
         float pos_x = vehicle.x * cell_size_ + cell_size_ / 2.0f;
         float pos_y = vehicle.y * cell_size_ + cell_size_ / 2.0f;
         
-        sf::Color color = Renderer::getVehicleColor(vehicle.id);
-        
-        sf::CircleShape shape(cell_size_ / 4.0f);
-        shape.setPosition(pos_x - cell_size_ / 4.0f, pos_y - cell_size_ / 4.0f);
-        shape.setFillColor(color);
-        
-        if (vehicle.is_waiting) {
-            shape.setFillColor(sf::Color(color.r, color.g, color.b, 150));
-        }
-        
-        window_.draw(shape);
+        Renderer::drawVehicle(window_, pos_x, pos_y, cell_size_ / 3.0f, vehicle.id, vehicle.is_waiting, vehicle.angle);
     }
 }
 
@@ -254,12 +246,14 @@ void SimulationWindow::close() {
     }
 }
 
-void SimulationWindow::run() {
+void SimulationWindow::run(traffic_simulation::SimulationController& controller) {
     while (isOpen()) {
         handleEvents();
         
         if (!is_paused_) {
-            // Add any per-frame update logic here if needed
+            // Obtenemos las posiciones y ángulos actualizados
+            auto render_info = controller.getVehicleManager().getRenderInfo();
+            setVehicles(&render_info);
         }
         
         render();

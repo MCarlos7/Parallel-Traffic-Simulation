@@ -91,7 +91,7 @@ void Vehicle::run() {
         }
         else if (current_state == traffic_simulation::VehicleState::MOVING) {
             // Simulate movement time
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
             
             // After moving, set to waiting for next intersection
             setState(traffic_simulation::VehicleState::WAITING);
@@ -176,6 +176,16 @@ traffic_simulation::VehicleState Vehicle::getState() const {
 
 city::Coordinate Vehicle::getPosition() const {
     return position_;
+}
+
+city::Coordinate Vehicle::getNextPosition() const {
+    std::lock_guard<std::mutex> lock(state_mutex_);
+    // Si aún hay camino por recorrer, devolvemos la siguiente celda
+    if (path_index_ < current_path_.size()) {
+        return current_path_[path_index_];
+    }
+    // Si ya llegó, la siguiente posición es la actual
+    return position_; 
 }
 
 int Vehicle::getId() const {

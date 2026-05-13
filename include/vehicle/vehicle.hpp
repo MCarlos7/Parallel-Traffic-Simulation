@@ -100,6 +100,12 @@ public:
     city::Coordinate getPosition() const;
 
     /**
+     * @brief Get the vehicle's next position in the path
+     * @return Next coordinate, or current position if at destination
+     */
+    city::Coordinate getNextPosition() const;
+
+    /**
      * @brief Get the vehicle's ID
      * @return Vehicle ID
      */
