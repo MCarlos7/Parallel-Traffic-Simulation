@@ -127,39 +127,74 @@ void SimulationWindow::drawGrid() {
     int grid_size = city_->getGridSize();
     int total_size = grid_size * cell_size_;
     
-    // Fondo de la ciudad (simulando edificios/pasto oscuro)
     sf::RectangleShape background(sf::Vector2f(total_size, total_size));
-    background.setFillColor(sf::Color(35, 40, 35)); 
+    background.setFillColor(sf::Color());// Transparente, solo queremos el color de fondo 
     window_.draw(background);
 }
 
 void SimulationWindow::drawStreets() {
     int grid_size = city_->getGridSize();
-    float road_width = cell_size_ * 0.5f; // Las calles ocupan la mitad de la celda
+    int total_size = grid_size * cell_size_;
     
-    // Dibujamos el asfalto forzando la cuadrícula (ya que el generador no instanció StreetSegments)
+    // Las calles ocupan el 60% de la celda
+    float road_width = cell_size_ * 0.6f; 
+    float offset = (cell_size_ - road_width) / 2.0f;
+    
+    sf::Color asphalt_color(50, 50, 55);
+    sf::Color dash_color(220, 200, 50, 150); // Amarillo translúcido para las líneas
+
+    // 1. Dibujar todas las calles horizontales
     for (int y = 0; y < grid_size; ++y) {
-        for (int x = 0; x < grid_size; ++x) {
-            float start_x = x * cell_size_ + cell_size_ / 2.0f;
-            float start_y = y * cell_size_ + cell_size_ / 2.0f;
-            
-            // Calle hacia la derecha (Este)
-            if (x < grid_size - 1) {
-                float end_x = (x + 1) * cell_size_ + cell_size_ / 2.0f;
-                Renderer::drawStreet(window_, start_x, start_y, end_x, start_y, road_width, sf::Color(60, 60, 65));
-            }
-            // Calle hacia abajo (Sur)
-            if (y < grid_size - 1) {
-                float end_y = (y + 1) * cell_size_ + cell_size_ / 2.0f;
-                Renderer::drawStreet(window_, start_x, start_y, start_x, end_y, road_width, sf::Color(60, 60, 65));
-            }
+        float pos_y = y * cell_size_ + offset;
+        
+        // Asfalto continuo
+        sf::RectangleShape road(sf::Vector2f(total_size, road_width));
+        road.setPosition(0, pos_y);
+        road.setFillColor(asphalt_color);
+        window_.draw(road);
+
+        // Línea central punteada
+        float center_y = y * cell_size_ + cell_size_ / 2.0f;
+        for (int i = 0; i < total_size; i += 15) {
+            int local_x = i % cell_size_;
+            // Evitamos dibujar la línea amarilla en medio de la intersección (se ve más realista)
+            if (local_x > offset && local_x < cell_size_ - offset) continue;
+
+            sf::RectangleShape dash(sf::Vector2f(8, 2));
+            dash.setPosition(i, center_y - 1);
+            dash.setFillColor(dash_color);
+            window_.draw(dash);
+        }
+    }
+
+    // 2. Dibujar todas las calles verticales
+    for (int x = 0; x < grid_size; ++x) {
+        float pos_x = x * cell_size_ + offset;
+        
+        // Asfalto continuo
+        sf::RectangleShape road(sf::Vector2f(road_width, total_size));
+        road.setPosition(pos_x, 0);
+        road.setFillColor(asphalt_color);
+        window_.draw(road);
+
+        // Línea central punteada
+        float center_x = x * cell_size_ + cell_size_ / 2.0f;
+        for (int i = 0; i < total_size; i += 15) {
+            int local_y = i % cell_size_;
+            // Evitamos dibujar en medio de la intersección
+            if (local_y > offset && local_y < cell_size_ - offset) continue;
+
+            sf::RectangleShape dash(sf::Vector2f(2, 8));
+            dash.setPosition(center_x - 1, i);
+            dash.setFillColor(dash_color);
+            window_.draw(dash);
         }
     }
 }
 
 void SimulationWindow::drawIntersections() {
     int grid_size = city_->getGridSize();
-    float road_width = cell_size_ * 0.5f; 
+    float road_width = cell_size_ * 0.6f; 
     float offset = (cell_size_ - road_width) / 2.0f;
     
     for (int y = 0; y < grid_size; ++y) {
@@ -167,23 +202,30 @@ void SimulationWindow::drawIntersections() {
             float pos_x = x * cell_size_;
             float pos_y = y * cell_size_;
             
-            // 1. Asfalto cuadrado en el centro de la intersección
-            sf::RectangleShape intersection(sf::Vector2f(road_width, road_width));
-            intersection.setPosition(pos_x + offset, pos_y + offset);
-            intersection.setFillColor(sf::Color(60, 60, 65));
-            window_.draw(intersection);
-            
-            // 2. Semáforos pequeños en la esquina de la acera
             sf::Color light_color = getTrafficLightColor(x, y);
+            
+            // Solo dibujamos semáforos donde la lógica dice que existen
             if (light_color != intersection_color_) {
-                sf::CircleShape light(cell_size_ * 0.10f);
-                light.setPosition(pos_x + offset - (cell_size_ * 0.05f), pos_y + offset - (cell_size_ * 0.05f));
+                float housing_size = cell_size_ * 0.15f;
+                
+                // Poste/Caja del semáforo en la esquina superior izquierda de la intersección
+                sf::RectangleShape housing(sf::Vector2f(housing_size, housing_size));
+                housing.setPosition(pos_x + offset - housing_size, pos_y + offset - housing_size);
+                housing.setFillColor(sf::Color(20, 20, 25)); // Gris muy oscuro
+                window_.draw(housing);
+                
+                // La luz del semáforo
+                sf::CircleShape light(housing_size * 0.35f);
+                // Centramos la luz dentro de la cajita
+                light.setPosition(pos_x + offset - housing_size + (housing_size * 0.15f), 
+                                  pos_y + offset - housing_size + (housing_size * 0.15f));
                 light.setFillColor(light_color);
                 
-                // Efecto de luz LED (Brillo sutil)
-                sf::CircleShape glow(cell_size_ * 0.18f);
-                glow.setPosition(pos_x + offset - (cell_size_ * 0.13f), pos_y + offset - (cell_size_ * 0.13f));
-                glow.setFillColor(sf::Color(light_color.r, light_color.g, light_color.b, 70));
+                // Efecto de resplandor (Glow)
+                sf::CircleShape glow(housing_size * 0.8f);
+                glow.setPosition(pos_x + offset - housing_size - (housing_size * 0.3f), 
+                                 pos_y + offset - housing_size - (housing_size * 0.3f));
+                glow.setFillColor(sf::Color(light_color.r, light_color.g, light_color.b, 60));
                 
                 window_.draw(glow);
                 window_.draw(light);
