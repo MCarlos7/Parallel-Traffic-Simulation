@@ -132,12 +132,14 @@ std::vector<gui::VehicleRenderInfo> VehicleManager::getRenderInfo() const {
         gui::VehicleRenderInfo info(
             vehicle->getId(), 
             current.x, current.y, 
-            current.x, current.y, // (Puedes omitir el destino visual si no lo usas)
+            current.x, current.y,
             angle
         );
         
         info.is_waiting = (vehicle->getState() == traffic_simulation::VehicleState::WAITING || 
                            vehicle->getState() == traffic_simulation::VehicleState::BLOCKED);
+                           
+        info.remaining_path = vehicle->getRemainingPath();
         
         render_list.push_back(info);
     }

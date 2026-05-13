@@ -118,6 +118,11 @@ public:
     std::pair<double, double> getMetrics() const;
 
     /**
+     * @brief Obtiene el camino restante para dibujarlo
+     */
+    std::vector<city::Coordinate> getRemainingPath() const;
+
+    /**
      * @brief Start the vehicle thread
      */
     void startThread();

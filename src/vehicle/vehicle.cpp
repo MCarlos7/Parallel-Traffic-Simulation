@@ -221,4 +221,14 @@ void Vehicle::setState(traffic_simulation::VehicleState new_state) {
     state_ = new_state;
 }
 
+std::vector<city::Coordinate> Vehicle::getRemainingPath() const {
+    std::lock_guard<std::mutex> lock(state_mutex_);
+    std::vector<city::Coordinate> path;
+    // Extraemos solo el camino que le falta por recorrer
+    for (std::size_t i = path_index_; i < current_path_.size(); ++i) {
+        path.push_back(current_path_[i]);
+    }
+    return path;
+}
+
 } // namespace vehicle

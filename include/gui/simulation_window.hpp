@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <memory>
+#include <vector>
+#include "city/intersection.hpp"
 
 namespace city {
     class City;
@@ -30,6 +32,7 @@ struct VehicleRenderInfo {
     int destination_y;
     bool is_waiting;
     float angle;
+    std::vector<city::Coordinate> remaining_path;
     
     VehicleRenderInfo(int vehicle_id, int start_x, int start_y, int dest_x, int dest_y, float ang = 0.0f)
         : id(vehicle_id), x(start_x), y(start_y),
